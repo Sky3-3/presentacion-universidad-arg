@@ -1,193 +1,65 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sostenibilidad del Sistema Universitario Argentino</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        /* CONFIGURACIÓN DE DIAPOSITIVA EJECUTIVA */
-        * { box-sizing: border-box; }
-        body { 
-            background-color: #0f172a; 
-            display: flex; 
-            flex-direction: column;
-            align-items: center; 
-            gap: 50px;
-            margin: 0; 
-            padding: 50px 0;
-        }
+import matplotlib.pyplot as plt
+import pandas as pd
 
-        .slide-container {
-            width: 1280px;
-            height: 720px;
-            background-color: #F8FAFC; /* Fondo gris claro, más corporativo */
-            color: #1e293b;
-            font-family: "DM Sans", sans-serif;
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            padding: 60px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            flex-shrink: 0;
-        }
+# 1. Configuración de datos de matrícula universitaria histórica
+matricula_data = {
+    "Año": [1945, 1950, 1955, 1960, 1965, 1970, 1975, 1980, 2012, 2021],
+    "Estudiantes": [47400, 80445, 138317, 160047, 222903, 261342, 487389, 386743, 1824904, 2549789]
+}
+df_matricula = pd.DataFrame(matricula_data)
 
-        /* LÍNEA DE COLOR: AZUL Y ROJO ALERTA */
-        .slide-container::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: #94a3b8;
-        }
+# 2. Configuración de datos de estudiantes extranjeros
+extranjeros_data = {
+    "Año": [2005, 2015, 2019, 2021, 2022],
+    "Estudiantes Extranjeros": [26354, 57953, 100382, 117820, 122769],
+    "% del total": [1.12, 3.05, 4.0, 3.9, 4.5]
+}
+df_extranjeros = pd.DataFrame(extranjeros_data)
 
-        /* TIPOGRAFÍA */
-        h1, h2, h3 { font-family: "Merriweather", serif; color: #1e3a8a; margin: 0; }
-        .slide-title { font-size: 42px; border-bottom: 4px solid #ef4444; padding-bottom: 15px; margin-bottom: 40px; width: 100%; text-align: left; }
-        p, li { font-size: 22px; line-height: 1.6; }
+# 3. Configuración de datos por tipo de gestión (2021 y 2022)
+gestion_data = {
+    "Año": ["2021", "2021", "2022", "2022"],
+    "Gestión": ["Estatal", "Privada", "Estatal", "Privada"],
+    "% Extranjeros": [4.1, 5.5, 4.25, 5.58]
+}
+df_gestion = pd.DataFrame(gestion_data)
 
-        /* COMPONENTES */
-        .content-area { display: flex; flex-direction: column; flex-grow: 1; justify-content: center; }
-        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
-        
-        .tile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-        .tile { background: #fff; padding: 35px; border-radius: 12px; border-top: 6px solid #3b82f6; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); }
-        .tile i { font-size: 40px; color: #ef4444; margin-bottom: 20px; }
-        .tile h3 { font-size: 22px; margin-bottom: 10px; color: #1e3a8a; }
+# =====================================================================
+# DISEÑO Y CONFIGURACIÓN DE LOS GRÁFICOS (Estilo Corporativo / Crítico)
+# =====================================================================
+# Cambiamos el estilo visual a uno más sobrio y limpio
+plt.style.use('seaborn-v0_8-whitegrid' if 'seaborn-v0_8-whitegrid' in plt.style.available else 'default')
 
-        .stat-highlight { text-align: center; }
-        .stat-number { font-size: 110px; font-weight: 700; color: #ef4444; font-family: 'Merriweather'; line-height: 1; }
-        .stat-label { font-size: 26px; color: #1e3a8a; margin-top: 10px; font-weight: 500; }
+fig, axs = plt.subplots(3, 1, figsize=(10, 16))
 
-        /* GRÁFICOS */
-        .bar-chart { display: flex; align-items: flex-end; gap: 40px; height: 300px; padding: 20px; border-bottom: 2px solid #cbd5e1; }
-        .bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .bar { width: 100%; background: #1e3a8a; border-radius: 4px 4px 0 0; min-height: 10px; position: relative; }
-        .bar::before { content: attr(data-value); position: absolute; top: -30px; width: 100%; text-align: center; font-weight: 700; color: #1e3a8a; }
+# Gráfico 1: Evolución histórica (Muestra la presión presupuestaria)
+axs[0].plot(df_matricula["Año"], df_matricula["Estudiantes"], marker='o', color='#1e3a8a', linewidth=2.5, markersize=6)
+axs[0].set_title("Crecimiento de la Matrícula Universitaria Argentina (1945–2021)", fontsize=13, fontweight='bold', color='#1e293b')
+axs[0].set_xlabel("Año", fontsize=11)
+axs[0].set_ylabel("Cantidad de Estudiantes (en millones)", fontsize=11)
+axs[0].ticklabel_format(style='plain', axis='y') # Evita la notación científica molesta
 
-        /* TABLAS */
-        table { width: 100%; border-collapse: collapse; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        th { background: #1e3a8a; color: #fff; padding: 20px; text-align: left; }
-        td { padding: 18px; border-bottom: 1px solid #e2e8f0; background: #fff; }
+# Gráfico 2: Estudiantes Extranjeros (El eje del debate)
+axs[1].bar(df_extranjeros["Año"], df_extranjeros["Estudiantes Extranjeros"], color='#ef4444', width=3)
+axs[1].set_title("Evolución del Ingreso de Estudiantes Extranjeros", fontsize=13, fontweight='bold', color='#1e293b')
+axs[1].set_xlabel("Año", fontsize=11)
+axs[1].set_ylabel("Cantidad de Extranjeros", fontsize=11)
 
-        /* SLIDE DE TÍTULO */
-        .title-slide { background-color: #1e3a8a; color: #f8fafc; text-align: center; justify-content: center; }
-        .title-slide h1 { color: #f8fafc; font-size: 64px; margin-bottom: 20px; }
-        .title-slide hr { width: 150px; border: 2px solid #ef4444; margin: 40px auto; }
-    </style>
-</head>
-<body>
+# Gráfico 3: Comparación por tipo de gestión (Pública vs Privada arancelada)
+colores_gestion = {"2021": "#94a3b8", "2022": "#3b82f6"} # Gris para 2021, Azul para 2022
+for year in ["2021", "2022"]:
+    subset = df_gestion[df_gestion["Año"] == year]
+    axs[2].bar(subset["Gestión"] + " " + year, subset["% Extranjeros"], color=colores_gestion[year], width=0.5)
 
-<!-- DIAPOSITIVA 1: PORTADA -->
-<div class="slide-container title-slide" id="slide1">
-    <h1>Análisis de Sostenibilidad Fiscal:<br>El Costo de la Gratuidad Universitaria</h1>
-    <hr>
-    <p style="font-size: 26px; opacity: 0.9; font-family: 'DM Sans';">Debate sobre el financiamiento impositivo y la regulación de la matrícula extranjera</p>
-</div>
+axs[2].set_title("Proporción de Alumnos Extranjeros por Tipo de Gestión (%)", fontsize=13, fontweight='bold', color='#1e293b')
+axs[2].set_ylabel("% del Total de Alumnos", fontsize=11)
+axs[2].set_ylim(0, 7) # Le damos aire arriba para que se vean bien las barras
 
-<!-- DIAPOSITIVA 2: EL DILEMA ECONÓMICO -->
-<div class="slide-container" id="slide2">
-    <h2 class="slide-title">El Mito de la Gratuidad: "Todo tiene un precio"</h2>
-    <div class="content-area">
-        <div class="two-column">
-            <div>
-                <p>En economía de la educación, el concepto de **arancel cero** no significa costo cero. El sistema universitario estatal se sostiene colectivamente.</p>
-                <ul style="margin-top: 30px; gap: 15px; display: flex; flex-direction: column;">
-                    <li><strong>Financiamiento Impositivo:</strong> El presupuesto de las instituciones se extrae de los impuestos de toda la sociedad (incluyendo sectores vulnerables).</li>
-                    <li><strong>Dilema de Residencia:</strong> Los extranjeros no residentes no han tributado históricamente en el país para financiar la infraestructura que utilizan.</li>
-                </ul>
-            </div>
-            <div style="background: #fff; padding: 40px; border-left: 8px solid #ef4444; border-radius: 4px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <h3 style="margin-bottom: 15px;">Principio de Reciprocidad Fiscal</h3>
-                <p style="font-size: 20px; color: #475569;">"Si un servicio público masivo es financiado por una base de contribuyentes local, la apertura irrestricta a no residentes sin compensación genera un déficit operativo que paga el ciudadano local."</p>
-            </div>
-        </div>
-    </div>
-</div>
+# Ajustes generales de la imagen
+plt.tight_layout()
 
-<!-- DIAPOSITIVA 3: MASIFICACIÓN DE LA MATRÍCULA -->
-<div class="slide-container" id="slide3">
-    <h2 class="slide-title">Presión sobre el Presupuesto: Serie Histórica</h2>
-    <div class="content-area">
-        <div class="bar-chart">
-            <div class="bar-col"><div class="bar" style="height: 12%" data-value="47k"></div><p>1945</p></div>
-            <div class="bar-col"><div class="bar" style="height: 28%" data-value="160k"></div><p>1960</p></div>
-            <div class="bar-col"><div class="bar" style="height: 48%" data-value="386k"></div><p>1980</p></div>
-            <div class="bar-col"><div class="bar" style="height: 80%" data-value="1.8M"></div><p>2012</p></div>
-            <div class="bar-col"><div class="bar" style="height: 100%" data-value="2.5M"></div><p>2021</p></div>
-        </div>
-        <p style="text-align: center; color: #475569; margin-top: 30px; font-weight: 500;">
-            El salto exponencial a **2.5 millones de alumnos** exige un nivel de financiamiento estatal que compite directamente con otras prioridades críticas del país (salud, seguridad, infraestructura básica).
-        </p>
-    </div>
-</div>
+# Guardar el gráfico automáticamente para poder subirlo a GitHub
+plt.savefig('analisis_matricula_universitaria.png', dpi=300, bbox_inches='tight')
+print("¡Gráfico generado y guardado como 'analisis_matricula_universitaria.png'!")
 
-<!-- DIAPOSITIVA 4: DATOS DE EXTRANJEROS -->
-<div class="slide-container" id="slide4">
-    <h2 class="slide-title">El Crecimiento de la Matrícula Internacional</h2>
-    <div class="content-area">
-        <div class="two-column">
-            <div class="stat-highlight">
-                <div class="stat-number">122.769</div>
-                <div class="stat-label">Alumnos Extranjeros en 2022</div>
-                <p style="font-size: 18px; color: #64748b; margin-top: 15px;">Un incremento sostenido que presiona la capacidad operativa de las aulas públicas.</p>
-            </div>
-            <div>
-                <h3 style="margin-bottom: 20px;">Porcentaje de Impacto por Tipo de Gestión</h3>
-                <table>
-                    <thead>
-                        <tr><th>Sector Universitario</th><th>% Extranjeros (2021)</th><th>% Extranjeros (2022)</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>Gestión Estatal (Pública)</td><td>4.10%</td><td>4.25%</td></tr>
-                        <tr><td>Gestión Privada (Arancelada)</td><td>5.50%</td><td>5.58%</td></tr>
-                        <tr><td><strong>Total General del Sistema</strong></td><td><strong>3.90%</strong></td><td><strong>4.50%</strong></td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- DIAPOSITIVA 5: PROPUESTA DE REFORMA -->
-<div class="slide-container" id="slide5">
-    <h2 class="slide-title">Hacia un Modelo Sostenible y Justo</h2>
-    <div class="content-area">
-        <p style="margin-bottom: 35px; font-weight: 500;">No se plantea un bloqueo excluyente, sino un **mecanismo de compensación financiera** basado en tres ejes lógicos:</p>
-        <div class="tile-grid">
-            <div class="tile">
-                <i class="fa-solid fa-calculator"></i>
-                <h3>Tasa Diferenciada</h3>
-                <p>Establecer un arancel moderado para extranjeros no residentes, destinado exclusivamente al mantenimiento edilicio y equipamiento tecnológico.</p>
-            </div>
-            <div class="tile">
-                <i class="fa-solid fa-handshake"></i>
-                <h3>Convenios de Reciprocidad</h3>
-                <p>Eximir del pago únicamente a estudiantes cuyos países de origen ofrezcan el mismo beneficio de gratuidad absoluta a ciudadanos argentinos.</p>
-            </div>
-            <div class="tile">
-                <i class="fa-solid fa-piggy-bank"></i>
-                <h3>Alivio al Contribuyente</h3>
-                <p>Reducir la carga de financiamiento neto del Estado, permitiendo redistribuir los fondos remanentes en becas para alumnos locales vulnerables.</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- DIAPOSITIVA 6: CONCLUSIÓN -->
-<div class="slide-container title-slide" id="slide6" style="background-color: #1e293b; border-top: 8px solid #ef4444;">
-    <h2 style="color: #f8fafc; font-size: 56px;">Equilibrio Fiscal y Educativo</h2>
-    <p style="color: #94a3b8; max-width: 900px; margin: 40px auto; font-size: 24px; line-height: 1.8;">
-        "Reconocer que la educación universitaria estatal tiene un costo real es el primer paso para protegerla. Regular la contribución de la matrícula extranjera no residente asegura la supervivencia y la calidad del sistema para las futuras generaciones."
-    </p>
-    <div style="margin-top: 40px; font-size: 16px; letter-spacing: 2px; color: #64748b;">
-        FIN DE LA PRESENTACIÓN • REPOSITORIO DE PORTFOLIO
-    </div>
-</div>
-
-</body>
-</html>
-
-5. ¡Y listo! Subí ese archivo directo a tu repositorio de GitHub. 
-
-Ahí sí te va a quedar como código puro para que la web funcione de una.
+plt.show()
